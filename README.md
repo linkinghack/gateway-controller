@@ -6,3 +6,9 @@
 ## 支持的代理软件：
 - Envoy
 
+## Roadmap
+- [ ] 支持TLS SNI 代理配置
+- [ ] 支持HTTP host based 代理配置
+- [ ] 支持HTTP URL based 代理配置
+- [ ] 支持HTTP代理日志插件
+- [ ] 支持TCP 代理配置

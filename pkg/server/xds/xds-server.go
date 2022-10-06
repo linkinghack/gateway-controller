@@ -22,7 +22,7 @@ import (
 )
 
 type XdsServer struct {
-	cache       *cache.SnapshotCache
+	cache       cache.SnapshotCache
 	snapVersion uint64
 	envoyServer server.Server
 	grpcServer  *grpc.Server
@@ -59,7 +59,7 @@ func NewXdsServerWithGlobalConfig(ctx context.Context) *XdsServer {
 	registerServer(grpcServer, srv)
 
 	return &XdsServer{
-		cache:         &c,
+		cache:         c,
 		snapVersion:   0,
 		envoyServer:   srv,
 		grpcServer:    grpcServer,
@@ -96,4 +96,8 @@ func registerServer(grpcServer *grpc.Server, server server.Server) {
 	listenerservice.RegisterListenerDiscoveryServiceServer(grpcServer, server)
 	secretservice.RegisterSecretDiscoveryServiceServer(grpcServer, server)
 	runtimeservice.RegisterRuntimeDiscoveryServiceServer(grpcServer, server)
+}
+
+func (x *XdsServer) GetXdsCache() cache.SnapshotCache {
+	return x.cache
 }

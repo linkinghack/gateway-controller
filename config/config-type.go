@@ -4,6 +4,7 @@ type GlobalConfig struct {
 	ServerConfig ControlPlaneAPIServerConfig `json:"serverConfig" yaml:"serverConfig"`
 	LogConfig    LoggerConfig                `json:"logConfig" yaml:"logConfig"`
 	DBConfig     DBConfig                    `json:"dbConfig" yaml:"dbConfig"`
+	EtcdConfig   EtcdConfig                  `json:"etcdConfig" yaml:"etcdConfig"`
 }
 
 type DBConfig struct {
@@ -19,6 +20,18 @@ type DBConfig struct {
 	MaxPoolSize          int               `json:"maxPoolSize" yaml:"maxPoolSize"`
 	MaxIdleSize          int               `json:"maxIdleSize" yaml:"maxIdleSize"`
 }
+
+type EtcdConfig struct {
+	Endpoints []string `json:"endpoints" yaml:"endpoints"`
+	AuthType  string   `json:"authType" yaml:"authType"`
+	Username  string   `json:"username" yaml:"username"`
+	Password  string   `json:"password" yaml:"password"`
+}
+
+const (
+	EtcdAuthTypeNone     = "None"
+	EtcdAuthTypePassowrd = "Password"
+)
 
 type LoggerConfig struct {
 	Level     string `json:"level" yaml:"level"`

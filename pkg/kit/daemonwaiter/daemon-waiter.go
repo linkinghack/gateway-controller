@@ -12,8 +12,8 @@ type DaemonWaiter struct {
 	stop         chan struct{}
 	ctx          context.Context
 	cancleCtx    context.CancelFunc
-	daemonsQueue chan *DaemonToWait
-	daemons      []*DaemonToWait
+	daemonsQueue chan DaemonToWait
+	daemons      []DaemonToWait
 }
 
 var defaultDaemonWaiter *DaemonWaiter
@@ -33,7 +33,7 @@ func NewDaemonWaiter() *DaemonWaiter {
 
 	return &DaemonWaiter{
 		stop:         make(chan struct{}),
-		daemonsQueue: make(chan *DaemonToWait),
+		daemonsQueue: make(chan DaemonToWait),
 		ctx:          ctx,
 		cancleCtx:    cancle,
 	}
@@ -55,7 +55,11 @@ func initDefaultDw() {
 	}
 }
 
-func (d *DaemonWaiter) AddAndStart(dw *DaemonToWait) {
+func (d *DaemonWaiter) GetContext() context.Context {
+	return d.ctx
+}
+
+func (d *DaemonWaiter) AddAndStart(dw DaemonToWait) {
 	if dw == nil {
 		return
 	}
@@ -68,12 +72,12 @@ func (d *DaemonWaiter) Run() {
 	for {
 		select {
 		case di := <-d.daemonsQueue:
-			go (*di).Start()
+			go di.Start()
 			logger.Debug("A daemon has started")
 		case <-d.stop:
 			logger.Info("Stopping DaemonWaiter")
 			for _, item := range d.daemons {
-				(*item).Stop()
+				item.Stop()
 			}
 			return
 		}

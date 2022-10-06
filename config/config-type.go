@@ -1,10 +1,11 @@
 package config
 
 type GlobalConfig struct {
-	ServerConfig ControlPlaneAPIServerConfig `json:"serverConfig" yaml:"serverConfig"`
-	LogConfig    LoggerConfig                `json:"logConfig" yaml:"logConfig"`
-	DBConfig     DBConfig                    `json:"dbConfig" yaml:"dbConfig"`
-	EtcdConfig   EtcdConfig                  `json:"etcdConfig" yaml:"etcdConfig"`
+	ServerConfig    ControlPlaneAPIServerConfig `json:"serverConfig" yaml:"serverConfig"`
+	LogConfig       LoggerConfig                `json:"logConfig" yaml:"logConfig"`
+	DBConfig        DBConfig                    `json:"dbConfig" yaml:"dbConfig"`
+	EtcdConfig      EtcdConfig                  `json:"etcdConfig" yaml:"etcdConfig"`
+	XdsServerConfig XdsServerConfig             `json:"xdsServerConfig" yaml:"xdsServerConfig"`
 }
 
 type DBConfig struct {
@@ -61,4 +62,12 @@ type ControlPlaneAPIServerConfig struct {
 	ListenAddr  string   `json:"listenAddr" yaml:"listenAddr"`
 	GinMode     string   `json:"ginMode" yaml:"ginMode"` // debug, release, test
 	CorsOrigins []string `json:"corsOrigins" yaml:"corsOrigins"`
+}
+
+type XdsServerConfig struct {
+	ListenAddr                  string `json:"listenAddr" yaml:"listenAddr"`
+	GrpcKeepaliveSeconds        uint64 `json:"grpcKeepaliceSeconds" yaml:"grpcKepaliveSeconds"`
+	GrpcKeepaliveTimeoutSeconds uint64 `json:"grpcKeepaliveTimeoutSeconds" yaml:"grpcKeepaliveTimeoutSeconds"`
+	GrpcKeepaliveMinTimeSeconds uint64 `json:"grpcKeepaliveMinTimeSeoncds" yaml:"grpcKeepaliveMinTimeSeoncds"`
+	GrpcMaxConcurrentStreams    uint64 `json:"grpcMaxConcurrentStreams" yaml:"grpcMaxConcurrentStreams"`
 }

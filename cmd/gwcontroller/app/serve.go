@@ -9,7 +9,9 @@ import (
 	"time"
 
 	"github.com/linkinghack/gateway-controller/config"
+	"github.com/linkinghack/gateway-controller/pkg/kit/daemonwaiter"
 	"github.com/linkinghack/gateway-controller/pkg/server/apiserver"
+	"github.com/linkinghack/gateway-controller/pkg/server/xds"
 	"github.com/spf13/cobra"
 )
 
@@ -28,8 +30,9 @@ func init() {
 func startServe(cmd *cobra.Command, args []string) {
 	conf := config.GetGlobalConfig()
 	apiServer := apiserver.NewGWControlAPIServer(&conf.ServerConfig)
-	// dw := background.GetDefaultDaemonWaiter()
+	dw := daemonwaiter.GetDefaultDaemonWaiter()
 
+	// HTTP API server
 	go func() {
 		err := apiServer.Start()
 		if err != nil {
@@ -37,8 +40,12 @@ func startServe(cmd *cobra.Command, args []string) {
 		}
 	}()
 
+	// XDS Server
+	xdsServer := xds.NewXdsServerWithGlobalConfig(dw.GetContext())
+	dw.AddAndStart(xdsServer)
+
 	// Start DaemonWaiter
-	// go dw.Run()
+	go dw.Run()
 
 	// graceful shut down
 	// Wait for interrupt signal to gracefully shut down the server with
@@ -57,7 +64,7 @@ func startServe(cmd *cobra.Command, args []string) {
 	defer cancel()
 
 	// Stop DaemonWaiter
-	// dw.Stop()
+	dw.Stop()
 
 	if err := apiServer.Stop(ctx); err != nil {
 		log.Fatal("Server forced to shutdown:", err)

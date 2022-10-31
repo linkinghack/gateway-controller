@@ -14,17 +14,17 @@ type EtcdConfWatcher struct {
 	eventChan clientv3.WatchChan
 	stopChan  chan bool
 	Key       string
-	isPrefix  bool
+	isList    bool
 
 	handlers map[mvccpb.Event_EventType][]func(event *clientv3.Event)
 }
 
-func NewEtcdConfWatcher(ctx context.Context, cli *clientv3.Client, key string, isPrefix bool) *EtcdConfWatcher {
+func NewEtcdConfWatcher(ctx context.Context, cli *clientv3.Client, key string, isList bool) *EtcdConfWatcher {
 	return &EtcdConfWatcher{
 		ctx:      ctx,
 		etcdCli:  cli,
 		Key:      key,
-		isPrefix: isPrefix,
+		isList:   isList,
 		handlers: make(map[mvccpb.Event_EventType][]func(event *clientv3.Event)),
 	}
 }
@@ -36,7 +36,7 @@ func (e *EtcdConfWatcher) RegisterHandler(eventType mvccpb.Event_EventType, hand
 func (e *EtcdConfWatcher) Start() {
 	log := log.GetSpecificLogger("pkg/confdiscovery/EtcdConfWatcher.Start()")
 	opts := []clientv3.OpOption{}
-	if e.isPrefix {
+	if e.isList {
 		opts = append(opts, clientv3.WithPrefix())
 	}
 	watchChan := e.etcdCli.Watch(e.ctx, e.Key, opts...)

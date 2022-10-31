@@ -8,6 +8,7 @@ import (
 	"github.com/linkinghack/gateway-controller/config"
 	"github.com/pkg/errors"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/namespace"
 )
 
 type EtcdConnStore struct {
@@ -39,6 +40,13 @@ func NewETCDConnStoreWithGlobalConfig() (*EtcdConnStore, error) {
 	cli, err := clientv3.New(cliConf)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create ETCD client")
+	}
+
+	// Set global key prefix (namespace)
+	if len(etcdConf.KeyNamespace) > 0 {
+		cli.KV = namespace.NewKV(cli.KV, etcdConf.KeyNamespace)
+		cli.Watcher = namespace.NewWatcher(cli.Watcher, etcdConf.KeyNamespace)
+		cli.Lease = namespace.NewLease(cli.Lease, etcdConf.KeyNamespace)
 	}
 
 	store := EtcdConnStore{

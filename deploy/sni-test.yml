@@ -1,6 +1,6 @@
 static_resources:
   listeners:
-  - name: "sni-k8s"
+  - name: "sni-k8sss"
     address:
       socket_address:
         address: 0.0.0.0
@@ -140,7 +140,7 @@ static_resources:
   #               address: https-upstream3
   #               port_value: 443
 
-  - name: cn-east1
+  - name: cn-east111
     type: STRICT_DNS
     lb_policy: ROUND_ROBIN
     load_assignment:

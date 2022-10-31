@@ -23,10 +23,11 @@ type DBConfig struct {
 }
 
 type EtcdConfig struct {
-	Endpoints []string `json:"endpoints" yaml:"endpoints"`
-	AuthType  string   `json:"authType" yaml:"authType"`
-	Username  string   `json:"username" yaml:"username"`
-	Password  string   `json:"password" yaml:"password"`
+	Endpoints    []string `json:"endpoints" yaml:"endpoints"`
+	AuthType     string   `json:"authType" yaml:"authType"`
+	Username     string   `json:"username" yaml:"username"`
+	Password     string   `json:"password" yaml:"password"`
+	KeyNamespace string   `json:"keyNamespace" yaml:"keyNamespace"` // Auto prepend key prefix, like: gw-control/xds (without trailing slash, it will be added automatically)
 }
 
 const (
